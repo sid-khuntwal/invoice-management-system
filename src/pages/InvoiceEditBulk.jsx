@@ -12,7 +12,7 @@ const InvoiceEditBulk = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleUpdateAll = () => {
+  const handleUpdateInvoice = () => {
     dispatch(updateAllInvoice(invoiceData));
     navigate("/");
   };
@@ -27,9 +27,9 @@ const InvoiceEditBulk = () => {
             <Button
               variant="primary mb-2 mb-md-4"
               className=" px-4"
-              onClick={handleUpdateAll}
+              onClick={handleUpdateInvoice}
             >
-              Update All
+              Update Invoices
             </Button>
           </div>
           <Table responsive bordered hover className=" text-center ">
@@ -37,8 +37,12 @@ const InvoiceEditBulk = () => {
               <tr>
                 <th className="">Invoice No</th>
                 <th>Due Date</th>
-                <th colSpan={3}>Bill To</th>
-                <th colSpan={3}>Bill From</th>
+                <th>Bill-To Name</th>
+                <th>Bill-T0 Email</th>
+                <th>Bill-To Address</th>
+                <th>Bill-From Name</th>
+                <th>Bill-From Email</th>
+                <th>Bill-From Address</th>
                 <th>Items</th>
                 <th>Currency</th>
                 <th>Tax Rate</th>
@@ -65,8 +69,8 @@ const InvoiceEditBulk = () => {
 
 // Component to render invoice rows and edit/update data
 const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
-  const [show, setShow] = useState(false);
-  const [items, setItems] = useState([]);
+  const [displayModal, setDisplayModal] = useState(false);
+  const [invoiceItems, setInvoiceItems] = useState([]);
 
   const handleInputChange = (index, field, value) => {
     const updatedInvoiceData = [...invoiceData];
@@ -81,14 +85,14 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
   };
 
   const handleInputItem = (index, field, value) => {
-    const updatedItems = [...items];
+    const updatedItems = [...invoiceItems];
 
     updatedItems[index] = {
       ...updatedItems[index],
       [field]: value,
     };
 
-    setItems(updatedItems);
+    setInvoiceItems(updatedItems);
   };
 
   const handleCalculateTotal = (invoice) => {
@@ -118,23 +122,21 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
     };
   };
 
-  const handleItemSave = (id) => {
+  const handleModalInvoiceSave = (id) => {
     let index = invoiceData.findIndex((invoice) => invoice.id === id);
     let invoices = [...invoiceData];
 
-    invoices[index] = { ...invoices[index], items };
+    invoices[index] = { ...invoices[index], invoiceItems };
     invoices[index] = handleCalculateTotal(invoices[index]);
     setInvoiceData(invoices);
-    setShow(false);
-    setItems([]);
+    setDisplayModal(false);
+    setInvoiceItems([]);
   };
 
-  const deleteItem = (i) => {
-    let item = [...items];
-
-    item.splice(i, 1);
-
-    setItems(item);
+  const handleModalInvoiceDelete = (id) => {
+    let item = [...invoiceItems];
+    item.splice(id, 1);
+    setInvoiceItems(item);
   };
 
   return (
@@ -251,22 +253,22 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
           variant="outline-primary"
           className=" p-1 "
           onClick={() => {
-            setItems(invoice.items);
-            setShow(true);
+            setInvoiceItems(invoice.items);
+            setDisplayModal(true);
           }}
         >
           <div className="d-flex align-items-center justify-content-center gap-2">
             <BiSolidPencil />
           </div>
         </Button>
-        <Modal show={show}>
+        <Modal show={displayModal}>
           <Modal.Header
             closeButton
             onClick={() => {
-              setShow(false);
+              setDisplayModal(false);
             }}
           >
-            <Modal.Title>Items</Modal.Title>
+            <Modal.Title>Invoice Items</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
@@ -277,7 +279,7 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
               <h5 className=" m-auto ">Price</h5>
               <h5 className=" m-auto ">Actions</h5>
             </div>
-            {items.map((item, i) => (
+            {invoiceItems.map((item, i) => (
               <div className=" d-flex gap-2 align-items-center mt-2 " key={i}>
                 <Form.Control
                   style={{ border: "1px solid gainsboro" }}
@@ -329,7 +331,7 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
                 />
                 <Button
                   variant="danger"
-                  onClick={() => deleteItem(i)}
+                  onClick={() => handleModalInvoiceDelete(i)}
                   className="d-flex align-items-center justify-content-center gap-2"
                 >
                   Delete
@@ -340,7 +342,7 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
           <Modal.Footer>
             <Button
               variant="primary"
-              onClick={() => handleItemSave(invoice.id)}
+              onClick={() => handleModalInvoiceSave(invoice.id)}
             >
               Save
             </Button>

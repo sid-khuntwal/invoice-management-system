@@ -82,7 +82,7 @@ const InvoiceList = () => {
                       ? true
                       : false
                   }
-                  variant="primary mb-2 mb-md-4"
+                  variant="dark mb-2 mb-md-4"
                   onClick={handleEditInvoicesClick}
                 >
                   {bulkEditBtnState ? "Edit Selected" : "Edit Invoices"}
@@ -91,7 +91,7 @@ const InvoiceList = () => {
                 {/* Button to Cancel Edit */}
                 {bulkEditBtnState && (
                   <Button
-                    variant="primary mb-2 mb-md-4"
+                    variant="danger mb-2 mb-md-4"
                     onClick={handleCancelClick}
                   >
                     Cancel Edit
@@ -119,11 +119,14 @@ const InvoiceList = () => {
                 <thead>
                   <tr>
                     <th className={bulkEditBtnState ? "d-block" : "d-none"}>
-                      <input
-                        type="checkbox"
-                        checked={selectInvoice}
-                        onChange={() => setSelectInvoice((pre) => !pre)}
-                      />
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectInvoice}
+                          onChange={() => setSelectInvoice((pre) => !pre)}
+                        />{" "}
+                        Select All
+                      </label>
                     </th>
                     <th>Invoice No.</th>
                     <th>Bill To</th>
