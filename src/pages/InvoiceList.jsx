@@ -78,7 +78,7 @@ const InvoiceList = () => {
                 {/* Button for Invoice Bulk Edit */}
                 <Button
                   disabled={
-                    bulkEditBtnState && selectedInvoiceList.length == 0
+                    bulkEditBtnState && selectedInvoiceList.length === 0
                       ? true
                       : false
                   }

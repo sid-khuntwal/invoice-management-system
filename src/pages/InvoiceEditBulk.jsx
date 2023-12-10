@@ -119,7 +119,7 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
   };
 
   const handleItemSave = (id) => {
-    let index = invoiceData.findIndex((invoice) => invoice.id == id);
+    let index = invoiceData.findIndex((invoice) => invoice.id === id);
     let invoices = [...invoiceData];
 
     invoices[index] = { ...invoices[index], items };
