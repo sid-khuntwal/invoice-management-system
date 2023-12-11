@@ -99,14 +99,11 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
     let subTotal = 0;
 
     invoice.items.forEach((item) => {
-      subTotal +=
-        parseFloat(item.itemPrice).toFixed(2) * parseInt(item.itemQuantity);
+      subTotal += parseFloat(item.itemPrice) * parseInt(item.itemQuantity);
     });
 
-    const taxAmount = parseFloat(subTotal * (invoice.taxRate / 100)).toFixed(2);
-    const discountAmount = parseFloat(
-      subTotal * (invoice.discountRate / 100)
-    ).toFixed(2);
+    const taxAmount = (subTotal * (invoice.taxRate / 100)).toFixed(2);
+    const discountAmount = (subTotal * (invoice.discountRate / 100)).toFixed(2);
     const total = (
       subTotal -
       parseFloat(discountAmount) +
@@ -115,7 +112,7 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
 
     return {
       ...invoice,
-      subTotal: parseFloat(subTotal).toFixed(2),
+      subTotal: subTotal.toFixed(2),
       taxAmount,
       discountAmount,
       total,
@@ -126,11 +123,23 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
     let index = invoiceData.findIndex((invoice) => invoice.id === id);
     let invoices = [...invoiceData];
 
-    invoices[index] = { ...invoices[index], invoiceItems };
+    invoices[index] = { ...invoices[index], items: invoiceItems };
+
     invoices[index] = handleCalculateTotal(invoices[index]);
+
     setInvoiceData(invoices);
     setDisplayModal(false);
     setInvoiceItems([]);
+  };
+
+  const handleAddItem = () => {
+    const newItem = {
+      itemId: invoiceItems.length,
+      itemName: "",
+      itemDescription: "",
+      itemPrice: "",
+    };
+    setInvoiceItems([...invoiceItems, newItem]);
   };
 
   const handleModalInvoiceDelete = (id) => {
@@ -340,6 +349,9 @@ const InvoiceRow = ({ invoice, index, invoiceData, setInvoiceData }) => {
             ))}
           </Modal.Body>
           <Modal.Footer>
+            <Button variant="dark" onClick={handleAddItem}>
+              Add Item
+            </Button>
             <Button
               variant="primary"
               onClick={() => handleModalInvoiceSave(invoice.id)}
